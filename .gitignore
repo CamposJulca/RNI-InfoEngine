@@ -1,0 +1,18 @@
+# ========================================
+# Carpetas NO versionables
+# ========================================
+
+# Datos crudos, dumps, informes, excel, temporales
+data/
+
+# Scripts locales, pruebas, ejecutables internos no productivos
+scripts/
+
+# Django collectstatic (generado automáticamente)
+staticfiles/
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv/
