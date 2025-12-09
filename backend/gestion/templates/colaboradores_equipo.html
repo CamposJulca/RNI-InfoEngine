@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .container {
+        padding: 30px;
+        max-width: 900px;
+        margin: auto;
+    }
+    .title {
+        font-size: 26px;
+        color: #005BBB;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .btn-back {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #005BBB;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .list {
+        margin-top: 20px;
+    }
+    .item {
+        padding: 12px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    .item a {
+        font-size: 20px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .item a:hover {
+        color: #005BBB;
+    }
+</style>
+
+<div class="container">
+
+    <h1 class="title">Colaboradores del equipo: {{ equipo }}</h1>
+
+    <a href="{% url 'dashboard' %}" class="btn-back">← Volver al Dashboard</a>
+
+    <div class="list">
+        {% for c in colaboradores %}
+        <div class="item">
+            <a href="{% url 'colaborador_detalle' c.id %}">{{ c.nombre }}</a>
+        </div>
+        {% empty %}
+        <p>No hay colaboradores activos en este equipo.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

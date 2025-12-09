@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SRNI – Actividades</title>
+    <style>
+        table {
+            width: 100%; border-collapse: collapse; margin-bottom: 40px;
+        }
+        th, td {
+            border: 1px solid #ccc; padding: 8px;
+        }
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+
+<h1>SRNI – Consulta de Actividades</h1>
+
+<h2>Colaboradores</h2>
+<table>
+    <tr><th>Nombre</th><th>Vinculación</th><th>Perfil</th></tr>
+    {% for c in colaboradores %}
+    <tr>
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.tipo_vinculacion }}</td>
+        <td>{{ c.perfil }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Actividades Registradas</h2>
+<table>
+    <tr><th>Colaborador</th><th>Procedimiento</th><th>Actividad</th><th>Frecuencia</th></tr>
+    {% for a in actividades %}
+    <tr>
+        <td>{{ a.colaborador.nombre }}</td>
+        <td>{{ a.procedimiento.nombre }}</td>
+        <td>{{ a.descripcion }}</td>
+        <td>{{ a.frecuencia }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Proyectos a Cargo</h2>
+<table>
+    <tr><th>Proyecto</th><th>Colaborador</th></tr>
+    {% for p in proyectos %}
+    <tr>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.colaborador.nombre }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Articulaciones</h2>
+<table>
+    <tr><th>Colaborador</th><th>Entidad</th><th>Tema</th></tr>
+    {% for art in articulaciones %}
+    <tr>
+        <td>{{ art.colaborador.nombre }}</td>
+        <td>{{ art.entidad }}</td>
+        <td>{{ art.tema }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>y
