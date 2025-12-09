@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Cargar ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<style>
+    .dashboard-container {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .title {
+        color: #005BBB;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        border-left: 6px solid #00A859;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .card-number {
+        font-size: 2.8rem;
+        color: #00A859;
+        font-weight: bold;
+        margin: 5px 0 0;
+    }
+
+    .charts-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 30px;
+    }
+
+    .chart-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+        .charts-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <h1 class="title">Dashboard de Contratos – SRNI</h1>
+
+    <!-- Tarjeta -->
+    <div class="cards">
+        <div class="card">
+            <h2>Total de Colaboradores Activos</h2>
+            <p class="card-number">{{ total_contratos }}</p>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-container">
+
+        <div class="chart-box">
+            <h3>Distribución por Equipo</h3>
+            <div id="chartEquipo"></div>
+        </div>
+
+        <div class="chart-box">
+            <h3>Tipo de Vinculación</h3>
+            <div id="chartVinculacion"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    const statsEquipo = {{ stats_equipo|safe }};
+    const statsVinc = {{ stats_vinculacion|safe }};
+
+    // ========================================================================
+    // 1. GRÁFICO DE EQUIPOS (CON CLICK → DRILL DOWN)
+    // ========================================================================
+    var optionsEquipo = {
+        chart: {
+            type: 'bar',
+            height: 330,
+            toolbar: { show: false },
+
+            events: {
+                dataPointSelection: function(event, chartContext, config) {
+                    let index = config.dataPointIndex;
+                    let equipoNombre = statsEquipo.labels[index];
+
+                    if (equipoNombre) {
+                        window.location.href = `/equipo/${encodeURIComponent(equipoNombre)}/`;
+                    }
+                }
+            },
+
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 900
+            }
+        },
+
+        series: [{
+            name: 'Colaboradores',
+            data: statsEquipo.values
+        }],
+
+        xaxis: {
+            categories: statsEquipo.labels,
+            labels: {
+                rotate: -45,
+                style: { fontSize: '13px' }
+            }
+        },
+
+        plotOptions: {
+            bar: {
+                distributed: true,
+                borderRadius: 6,
+                columnWidth: '55%',
+                cursor: 'pointer'
+            }
+        },
+
+        colors: [
+            "#005BBB", "#006FE6", "#0084FF", "#339DFF",
+            "#66B5FF", "#99CDFF", "#CCE6FF", "#E6F3FF"
+        ],
+
+        tooltip: { theme: "light" }
+    };
+
+    new ApexCharts(document.querySelector("#chartEquipo"), optionsEquipo).render();
+
+
+
+    // ========================================================================
+    // 2. GRÁFICO DONUT DE VINCULACIÓN
+    // ========================================================================
+    var optionsVinc = {
+        chart: {
+            type: 'donut',
+            height: 330,
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 1100
+            }
+        },
+
+        series: statsVinc.values,
+        labels: statsVinc.labels,
+
+        legend: {
+            position: "bottom",
+            fontSize: "14px"
+        },
+
+        colors: ["#005BBB", "#FFD500", "#00A859", "#7A5CFF"],
+
+        stroke: {
+            width: 3,
+            colors: ["#FFFFFF"]
+        },
+
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: "70%",
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: "Total",
+                            fontSize: "18px",
+                            formatter: () => statsVinc.values.reduce((a, b) => a + b, 0)
+                        }
+                    }
+                }
+            }
+        },
+
+        fill: { type: "gradient" }
+    };
+
+    new ApexCharts(document.querySelector("#chartVinculacion"), optionsVinc).render();
+
+</script>
+
+{% endblock %}
