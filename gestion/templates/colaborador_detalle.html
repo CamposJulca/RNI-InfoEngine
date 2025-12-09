@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .container {
+        padding: 30px;
+        max-width: 900px;
+        margin: auto;
+    }
+    h2 {
+        color: #005BBB;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        font-size: 22px;
+    }
+    .block {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+    }
+    .accordion {
+        margin-top: 10px;
+    }
+    details {
+        background: #f8f8f8;
+        margin-bottom: 10px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+    }
+    details summary {
+        font-weight: bold;
+        font-size: 16px;
+        color: #003366;
+        outline: none;
+    }
+    .subactividad {
+        margin-left: 25px;
+        margin-top: 8px;
+        font-size: 15px;
+        color: #444;
+    }
+</style>
+
+<div class="container">
+
+    <a class="btn-back" href="javascript:history.back()">← Volver</a>
+
+    <h1>{{ colaborador.nombre }}</h1>
+
+    <!-- DATOS PERSONALES -->
+    <div class="block">
+        <h2>Datos del Colaborador</h2>
+        <p><strong>Cédula:</strong> {{ colaborador.cedula }}</p>
+        <p><strong>Vinculación:</strong> {{ colaborador.tipo_vinculacion }}</p>
+        <p><strong>Perfil:</strong> {{ colaborador.perfil }}</p>
+        <p><strong>Equipo:</strong> {{ colaborador.equipo.nombre }}</p>
+    </div>
+
+    <!-- CONTRATOS -->
+    <div class="block">
+        <h2>Contratos</h2>
+        {% for ct in contratos %}
+            <p>
+                <strong>{{ ct.numero }}/{{ ct.vigencia }}:</strong> {{ ct.objeto }}<br>
+                <strong>Inicio:</strong> {{ ct.fecha_inicio }} |
+                <strong>Fin:</strong> {{ ct.fecha_fin }}
+            </p>
+        {% empty %}
+            <p>No tiene contratos registrados.</p>
+        {% endfor %}
+    </div>
+
+    <!-- ACTIVIDADES EN ÁRBOL -->
+    <div class="block">
+        <h2>Actividades (Estructura jerárquica)</h2>
+
+        {% if arbol_actividades %}
+            <div class="accordion">
+                {% for general, lista in arbol_actividades.items %}
+                    <details>
+                        <summary>{{ general }}</summary>
+
+                        {% if lista %}
+                            {% for sub in lista %}
+                                <p class="subactividad">• {{ sub }}</p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="subactividad"><em>Sin subactividades</em></p>
+                        {% endif %}
+                    </details>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No se registraron actividades.</p>
+        {% endif %}
+    </div>
+
+    <!-- ARTICULACIONES -->
+    <div class="block">
+        <h2>Articulaciones</h2>
+        {% for ar in articulaciones %}
+            <p>• <strong>{{ ar.entidad }}:</strong> {{ ar.tema }}</p>
+        {% empty %}
+            <p>No tiene articulaciones registradas.</p>
+        {% endfor %}
+    </div>
+
+    <!-- PROYECTOS -->
+    <div class="block">
+        <h2>Proyectos</h2>
+        {% for p in proyectos %}
+            <p>• {{ p.nombre }}</p>
+        {% empty %}
+            <p>No tiene proyectos asignados.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
